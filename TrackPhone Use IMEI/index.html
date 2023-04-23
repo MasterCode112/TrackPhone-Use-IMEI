@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Device Location Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script>
+      var map, marker;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: {lat: -34.397, lng: 150.644}
+        });
+        marker = new google.maps.Marker({
+          map: map,
+          position: {lat: -34.397, lng: 150.644}
+        });
+      }
+    </script>
+  </head>
+  <body onload="initMap()">
+    <div class="container">
+      <h1 class="text-center">Device Location Tracker</h1>
+      <div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" id="location-search-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+      <form>
+        <div class="form-group">
+          <label for="imei">IMEI Number</label>
+          <input type="text" class="form-control" id="imei" placeholder="Enter IMEI number">
+        </div>
+        <button type="submit" class="btn btn-primary" id="track-btn">Track</button>
+      </form>
+      <div id="map" style="height: 500px;"></div>
+   <script>
+    $("form").on("submit", function(e) {
+        e.preventDefault();
+        var imei = $("#imei").val();
+        $("#location-search-progress").width("25%"); // set the initial progress bar width
+        // make ajax call to device location tracking API
+        $.ajax({
+            url: `https://api.example.com/location?imei=${imei}`, // replace with a valid API endpoint
+            beforeSend: function() {
+            // show progress bar
+            $("#location-search-progress").show();
+            },
+            success: function(data) {
+            var location = data.location;
+            // update marker position on map
+            marker.setPosition(location);
+            // center map on marker
+            map.setCenter(location);
+            // play alarm sound
+            var audio = new Audio("alarm.mp3");
+            audio.play();
+            // hide progress bar
+            $("#location-search-progress").hide();
+            },
+            error: function(error) {
+            alert("Error tracking device location: " + error);
+            // hide progress bar
+            $("#location-search-progress").hide();
+            }
+        });
+        });
+
+</script>
+
+</div>
+  </body>
+</html>
